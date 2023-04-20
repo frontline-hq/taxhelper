@@ -1,0 +1,55 @@
+{
+	"name": "taxhelper",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"test": "playwright test",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test:unit": "vitest",
+		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"format": "prettier --plugin-search-dir . --write ."
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.28.1",
+		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/kit": "^1.5.0",
+		"@types/csvtojson": "^2.0.0",
+		"@types/d3": "^7.4.0",
+		"@types/lodash": "^4.14.194",
+		"@typescript-eslint/eslint-plugin": "^5.45.0",
+		"@typescript-eslint/parser": "^5.45.0",
+		"carbon-components-svelte": "^0.73.5",
+		"eslint": "^8.28.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-svelte3": "^4.0.0",
+		"prettier": "^2.8.0",
+		"prettier-plugin-svelte": "^2.8.1",
+		"svelte": "^3.54.0",
+		"svelte-check": "^3.0.1",
+		"tslib": "^2.4.1",
+		"typescript": "^5.0.0",
+		"vite": "^4.2.0",
+		"vitest": "^0.25.3"
+	},
+	"type": "module",
+	"dependencies": {
+		"autoprefixer": "^10.4.14",
+		"browser-fs-access": "^0.33.0",
+		"csvtojson": "^2.0.10",
+		"d3": "^7.8.4",
+		"handsontable": "^12.3.3",
+		"lodash": "^4.17.21",
+		"postcss": "^8.4.21",
+		"rxdb": "^14.8.2",
+		"rxjs": "^7.8.0",
+		"tailwindcss": "^3.3.1"
+	},
+	"packageManager": "yarn@3.5.0",
+	"resolutions": {
+		"native-file-system-adapter@^3.0.0": "patch:native-file-system-adapter@npm%3A3.0.0#./.yarn/patches/native-file-system-adapter-npm-3.0.0-cfe533fb0d.patch"
+	}
+}
