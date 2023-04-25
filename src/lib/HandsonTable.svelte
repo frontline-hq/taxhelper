@@ -24,4 +24,4 @@
 	}
 </script>
 
-<div style="width: 100%" use:initHandson />
+<div use:initHandson />

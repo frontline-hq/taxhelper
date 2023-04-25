@@ -5,12 +5,13 @@ import { writable, get } from 'svelte/store';
 import { RxDBMigrationPlugin } from 'rxdb/plugins/migration';
 import { directoryOpen } from 'browser-fs-access';
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
+import { getRulesSchema } from './rules';
 addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);
 
 const mySchema = {
 	title: 'project schema',
-	version: 4,
+	version: 0,
 	primaryKey: 'projectId',
 	type: 'object',
 	properties: {
@@ -31,7 +32,8 @@ const mySchema = {
 					}
 				}
 			}
-		}
+		},
+		rules: { type: 'string' }
 	},
 	required: ['projectId', 'dirHandle']
 };
@@ -69,6 +71,20 @@ export const getProjectDocument = async (id: string) => {
 			})) as RxDocument;
 	}
 	throw Error('database is not defined');
+};
+
+export const getRules = async () => {
+	const doc = await getProjectDocument('default project');
+	return (doc.get('rules') as string) ?? '[]';
+};
+
+export const setRules = async (rules: string) => {
+	const doc = await getProjectDocument('default project');
+	doc.update({
+		$set: {
+			rules: rules
+		}
+	});
 };
 
 export const getParsedFiles = async () => {
@@ -111,6 +127,7 @@ type TreeEntry = { text: string; id: number; children?: Array<TreeEntry> };
 export async function getTreeViewFilesFromDB() {
 	const tree = { children: [], text: 'base', id: 0 } as TreeEntry;
 	let i = 0;
+	const ids: number[] = [];
 	const treeFilesIdMap = new Map<number | string, string>();
 	const parsedFiles = (await getParsedFiles()) ?? [];
 	parsedFiles.forEach((a) => {
@@ -122,6 +139,7 @@ export async function getTreeViewFilesFromDB() {
 			let newParentNode = parent.children.find((p) => p.text === id);
 			if (!newParentNode) {
 				parent.children.push({ text: id, id: i });
+				ids.push(i);
 				newParentNode = parent.children.at(-1);
 			}
 			if (newParentNode) parent = newParentNode;
@@ -129,7 +147,7 @@ export async function getTreeViewFilesFromDB() {
 		});
 		treeFilesIdMap.set(i - 1, a.id);
 	});
-	return { tree: tree.children, idMap: treeFilesIdMap };
+	return { tree: tree.children, idMap: treeFilesIdMap, ids };
 }
 
 export async function parseCsvFile(blob: File) {
