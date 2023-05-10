@@ -1,15 +1,22 @@
 import { createRxDatabase, addRxPlugin, type RxDocument } from 'rxdb';
 import { csv } from 'd3';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
-import { writable, get } from 'svelte/store';
+import { writable, get, derived } from 'svelte/store';
 import { RxDBMigrationPlugin } from 'rxdb/plugins/migration';
 import { directoryOpen } from 'browser-fs-access';
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
-import { getRulesSchema } from './rules';
 addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);
 
-const mySchema = {
+export const initialDataHeader = writable<string[]>([]);
+export const initialDataBody = writable<string[][]>([]);
+export const initialData = derived(
+	[initialDataHeader, initialDataBody],
+	([dataHeader, dataBody]) => {
+		return [dataHeader, ...dataBody];
+	}
+);
+const schema = {
 	title: 'project schema',
 	version: 0,
 	primaryKey: 'projectId',
@@ -47,7 +54,7 @@ export async function createDatabase() {
 	});
 	await db.addCollections({
 		projects: {
-			schema: mySchema
+			schema
 		}
 	});
 	// Find document showing the necessary data or create it
